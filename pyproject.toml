@@ -39,6 +39,7 @@ dependencies = [
     'importlib-metadata; python_version<"3.8"',
     "six",
     "werkzeug >= 2.2.2",
+    "zstd"
 ]
 
 [project.optional-dependencies]

@@ -9,6 +9,7 @@ This module provides response filter decorators.
 
 import gzip as gzip2
 import zlib
+import zstd
 
 import brotlicffi as _brotli
 
@@ -113,3 +114,25 @@ def brotli(f, *args, **kwargs):
         return data
 
     return deflated_data
+
+
+@decorator
+def zstd_filter(f, *args, **kwargs):
+    """Zstandard Flask Response Decorator"""
+
+    data = f(*args, **kwargs)
+
+    if isinstance(data, Response):
+        content = data.data
+    else:
+        content = data
+
+    compressed_data = zstd.compress(content)
+    if isinstance(data, Response):
+        data.data = compressed_data
+        data.headers["Content-Encoding"] = "zstd"
+        data.headers["Content-Length"] = str(len(data.data))
+
+        return data
+    raise Exception("Not implemented")
+    return compressed_data
